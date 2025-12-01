@@ -37,10 +37,11 @@ class Kiloships_Admin
      */
     public function add_admin_menu()
     {
-        add_options_page(
+        add_submenu_page(
+            'woocommerce',
             'Kiloships Shipping',
             'Kiloships Shipping',
-            'manage_options',
+            'manage_woocommerce',
             'kiloships-shipping',
             array($this, 'render_settings_page')
         );

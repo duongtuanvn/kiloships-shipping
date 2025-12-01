@@ -4,7 +4,7 @@
  * Plugin Name: Kiloships Shipping
  * Plugin URI: https://kiloships.com
  * Description: Integrate Kiloships shipping label generation into WooCommerce.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: DuongTuanVn
  * Author URI: https://tuan.digital
  * Text Domain: kiloships-shipping
