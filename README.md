@@ -42,7 +42,7 @@ Sau khi kích hoạt plugin, bạn cần:
 
 ## Tác giả
 
-Antigravity
+DuongTuanVn
 
 ## License
 

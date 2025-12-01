@@ -5,8 +5,8 @@
  * Plugin URI: https://kiloships.com
  * Description: Integrate Kiloships shipping label generation into WooCommerce.
  * Version: 1.0.0
- * Author: Antigravity
- * Author URI: https://google.com
+ * Author: DuongTuanVn
+ * Author URI: https://tuan.digital
  * Text Domain: kiloships-shipping
  * Domain Path: /languages
  */
