@@ -1,9 +1,4 @@
 # Kiloships Shipping Plugin for WooCommerce
-
-**Version:** 1.0.0
-**Author:** DuongTuanVn
-**Author URI:** https://tuan.digital
-
 Plugin tích hợp dịch vụ tạo shipping label của Kiloships vào WooCommerce.
 
 ---
@@ -800,7 +795,7 @@ Kiloships_Admin_Reports::create_table();
 
 ## Changelog
 
-### Version 1.0.0
+### Version 1.1.0
 - Initial release
 - Tích hợp Kiloships API
 - Quản lý suppliers

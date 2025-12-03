@@ -27,6 +27,11 @@ class Kiloships_Order
      */
     public function add_meta_box()
     {
+        // Safety check for WooCommerce
+        if (!function_exists('wc_get_container') || !function_exists('wc_get_page_screen_id')) {
+            return;
+        }
+
         $screen = class_exists('\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController') && wc_get_container()->get(\Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController::class)->custom_orders_table_usage_is_enabled()
             ? wc_get_page_screen_id('shop_order')
             : 'shop_order';
@@ -44,12 +49,30 @@ class Kiloships_Order
     /**
      * Render meta box content.
      *
-     * @param WP_Post $post Order post object.
+     * @param WP_Post|WC_Order $post Order post object or WC_Order object (HPOS).
      */
     public function render_meta_box($post)
     {
-        $order = wc_get_order($post->ID);
-        if (! $order) {
+        // Safety check for WooCommerce
+        if (!function_exists('wc_get_order')) {
+            echo '<p>WooCommerce is not properly loaded. Please refresh the page.</p>';
+            return;
+        }
+
+        // HPOS compatibility: $post can be WC_Order or WP_Post
+        if ($post instanceof WC_Order) {
+            // HPOS: $post is already a WC_Order object
+            $order = $post;
+        } elseif ($post instanceof WP_Post) {
+            // Legacy: $post is a WP_Post, get order from ID
+            $order = wc_get_order($post->ID);
+        } else {
+            // Fallback: try to get order from $post if it's a numeric ID
+            $order = wc_get_order($post);
+        }
+
+        if (!$order) {
+            echo '<p>Unable to load order data.</p>';
             return;
         }
 
@@ -76,7 +99,7 @@ class Kiloships_Order
             echo '</div>';
 
             // Add JavaScript for cancel functionality
-            ?>
+?>
             <script type="text/javascript">
                 jQuery(document).ready(function($) {
                     $('.kiloships-cancel-label').on('click', function() {
@@ -132,7 +155,7 @@ class Kiloships_Order
                     });
                 });
             </script>
-            <?php
+        <?php
         } else {
             // Calculate total weight
             $total_weight = 0;
@@ -170,7 +193,7 @@ class Kiloships_Order
                 'country' => isset($shipping_address['country']) ? $shipping_address['country'] : 'US',
             );
 
-?>
+        ?>
             <style>
                 .kiloships-container {
                     background: #fff;
@@ -217,8 +240,13 @@ class Kiloships_Order
                 }
 
                 @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
+                    from {
+                        opacity: 0;
+                    }
+
+                    to {
+                        opacity: 1;
+                    }
                 }
 
                 .kiloships-form-group {
@@ -362,7 +390,7 @@ class Kiloships_Order
                             }
                             ?>
                         </select>
-                        <small style="color: #666; display: block; margin-top: 5px;">Select a saved supplier or enter manually below. <a href="<?php echo admin_url('options-general.php?page=kiloships-shipping'); ?>" target="_blank">Manage Suppliers</a></small>
+                        <small style="color: #666; display: block; margin-top: 5px;">Select a saved supplier or enter manually below. <a href="<?php echo admin_url('admin.php?page=kiloships-shipping&tab=suppliers'); ?>" target="_blank">Manage Suppliers</a></small>
                     </div>
                     <div class="kiloships-form-group"><label>Name</label><input type="text" id="ks_from_name" value="<?php echo esc_attr($from['name']); ?>"></div>
                     <div class="kiloships-form-group"><label>Street 1</label><input type="text" id="ks_from_street1" value="<?php echo esc_attr($from['street1']); ?>"></div>
@@ -821,14 +849,16 @@ class Kiloships_Order
                 require_once KILOSHIPS_PLUGIN_DIR . 'includes/class-kiloships-admin-reports.php';
             }
 
-            $from_address = sprintf('%s, %s, %s %s',
+            $from_address = sprintf(
+                '%s, %s, %s %s',
                 sanitize_text_field($_POST['from_street1']),
                 sanitize_text_field($_POST['from_city']),
                 strtoupper(sanitize_text_field($_POST['from_state'])),
                 sanitize_text_field($_POST['from_zip'])
             );
 
-            $to_address = sprintf('%s, %s, %s %s',
+            $to_address = sprintf(
+                '%s, %s, %s %s',
                 sanitize_text_field($_POST['to_street1']),
                 sanitize_text_field($_POST['to_city']),
                 strtoupper(sanitize_text_field($_POST['to_state'])),

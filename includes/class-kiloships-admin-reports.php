@@ -193,7 +193,7 @@ class Kiloships_Admin_Reports
                 $total_cancelled++;
             }
         }
-        ?>
+?>
 
         <div class="wrap">
             <h2>Label Reports</h2>
@@ -334,7 +334,7 @@ class Kiloships_Admin_Reports
                 });
             });
         </script>
-        <?php
+<?php
     }
 
     /**
@@ -371,7 +371,7 @@ class Kiloships_Admin_Reports
         $output = fopen('php://output', 'w');
 
         // Add BOM for Excel UTF-8 support
-        fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+        fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
         // Add column headers
         fputcsv($output, array(
